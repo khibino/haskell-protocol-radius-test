@@ -45,19 +45,19 @@ genSizedString n = fromString <$> genSizedList n
 genAtText :: Int -> Gen AtText
 genAtText n = AtText <$> genSizedString (n  `quot` 4)
 
-instance Arbitrary (AtText) where
+instance Arbitrary AtText where
   arbitrary = genAtText (255 - 1 - 1) {- USE CAREFULLY with vendor specific. -}
 
 genAtString :: Int -> Gen AtString
 genAtString n = AtString <$> genSizedString n
 
-instance Arbitrary (AtString) where
+instance Arbitrary AtString where
   arbitrary = genAtString (255 - 1 - 1) {- USE CAREFULLY with vendor specific. -}
 
-instance Arbitrary (AtInteger) where
+instance Arbitrary AtInteger where
   arbitrary = AtInteger <$> arbitrary
 
-instance Arbitrary (AtIpV4) where
+instance Arbitrary AtIpV4 where
   arbitrary = AtIpV4 <$> arbitrary
 
 
