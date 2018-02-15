@@ -2,6 +2,9 @@
 
 module Test.Data.Radius.ArbitrariesBase (
   genPacket,
+
+  genSizedString,
+  genAtText, genAtString,
   ) where
 
 import Test.QuickCheck (Arbitrary (..), Gen, elements, choose)
