@@ -22,8 +22,8 @@ library
   exposed-modules:
                        Test.Data.Radius.Iso
                        Test.Data.Radius.Arbitraries
+  other-modules:
                        Test.Data.Radius.ArbitrariesBase
-  -- other-modules:
   other-extensions:    FlexibleInstances
   build-depends:       base <5
                      , quickcheck-simple >=0.1
