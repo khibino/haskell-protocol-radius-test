@@ -22,6 +22,7 @@ library
   exposed-modules:
                        Test.Data.Radius.Iso
                        Test.Data.Radius.Arbitraries
+                       Test.Data.Radius.ArbitrariesNoVSA
   other-modules:
                        Test.Data.Radius.ArbitrariesBase
   other-extensions:    FlexibleInstances
