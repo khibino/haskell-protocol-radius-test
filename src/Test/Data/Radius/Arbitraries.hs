@@ -5,40 +5,21 @@ module Test.Data.Radius.Arbitraries (
   genPacket,
   ) where
 
-import Test.QuickCheck (Arbitrary (..), Gen, oneof, elements, choose)
+import Test.QuickCheck (Arbitrary (..), Gen, oneof, elements)
 
-import Control.Applicative ((<$>), pure, (<*>))
+import Test.Data.Radius.ArbitrariesBase (genPacket)
+
+import Control.Applicative ((<$>), (<*>))
 import Control.Monad (replicateM)
 import Data.String (IsString, fromString)
-import qualified Data.ByteString as BS
-import Data.Word (Word16)
 import qualified Data.Set as Set
-import Data.Serialize.Put (Put, runPut)
 
 import Data.Radius.Scalar
-  (Bin128, word64Bin128, AtText (..), AtString (..), AtInteger (..), AtIpV4 (..))
-import Data.Radius.Packet (codeFromWord, Code, Header(..), Packet (..))
+  (AtText (..), AtString (..), AtInteger (..))
 import Data.Radius.Attribute
   (NumberAbstract (..), Attribute' (..), untypeNumber, Attribute (..),
    TypedNumberSets (..), )
-import qualified Data.Radius.Attribute as Attribute
-import qualified Data.Radius.StreamPut as Put
 
-
-instance Arbitrary Code where
-  arbitrary = codeFromWord <$> arbitrary
-
-instance Arbitrary Bin128 where
-  arbitrary = word64Bin128 <$> arbitrary <*> arbitrary
-
-instance Arbitrary Attribute.Number where
-  arbitrary =
-    elements
-    [ c
-    | w <- [0  .. 255]
-    , let c = Attribute.fromWord w
-    , c /= Attribute.VendorSpecific
-    ]
 
 instance Arbitrary v => Arbitrary (NumberAbstract v) where
   arbitrary = oneof [ Standard <$> arbitrary, Vendors <$> arbitrary ]
@@ -60,20 +41,8 @@ instance Arbitrary v => Arbitrary (Attribute' v) where
 genAtText :: Int -> Gen AtText
 genAtText n = AtText <$> genSizedString (n  `quot` 4)
 
-instance Arbitrary (AtText) where
-  arbitrary = genAtText (255 - 1 - 1) {- USE CAREFULLY with vendor specific. -}
-
 genAtString :: Int -> Gen AtString
 genAtString n = AtString <$> genSizedString n
-
-instance Arbitrary (AtString) where
-  arbitrary = genAtString (255 - 1 - 1) {- USE CAREFULLY with vendor specific. -}
-
-instance Arbitrary (AtInteger) where
-  arbitrary = AtInteger <$> arbitrary
-
-instance Arbitrary (AtIpV4) where
-  arbitrary = AtIpV4 <$> arbitrary
 
 
 instance TypedNumberSets v => Arbitrary (Attribute v AtText) where
@@ -104,39 +73,3 @@ instance Arbitrary (Attribute AtIpV4) where
     <$> elements (Set.toList attributeNumbersIpV4)
     <*> arbitrary
  -}
-
-
-genHeader :: Word16 -> Gen Header
-genHeader len =
-  Header <$> arbitrary <*> arbitrary <*> pure len <*> arbitrary
-
--- Random header, may be wrong length
-instance Arbitrary Header where
-  arbitrary = genHeader =<< arbitrary
-
-pseudoHeader :: Header
-pseudoHeader = Header (codeFromWord 0) 0 0 (word64Bin128 0 0)
-
-genCountedPacket :: Arbitrary a
-                 => Int
-                 -> (a -> Put)
-                 -> Gen (Packet [a], Int)
-genCountedPacket ac encodeA = do
-  attrs <- replicateM ac arbitrary
-  let len = BS.length . runPut . Put.packet (mapM_ encodeA) $ Packet pseudoHeader attrs
-  (,) <$> (Packet <$> (genHeader $ fromIntegral len) <*> pure attrs) <*> pure len
-
-genPacket :: Arbitrary a
-          => (a -> Put)
-          -> Gen (Packet [a])
-genPacket encodeA = do
-  ac <- choose (0, 31)
-  (p, len) <- genCountedPacket ac encodeA
-  if len <= 4096
-    then pure p
-    else do
-    ac <- choose (0, 15)
-    (p, len) <- genCountedPacket ac encodeA
-    if len <= 4096
-      then pure p
-      else fail "genPacket: this should not happen broken size property (header-size + 256 * 15 < 4096)."
