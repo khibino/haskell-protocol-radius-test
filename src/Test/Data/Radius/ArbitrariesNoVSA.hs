@@ -1,4 +1,3 @@
-{-# LANGUAGE EmptyCase #-}
 {-# LANGUAGE FlexibleInstances #-}
 
 module Test.Data.Radius.ArbitrariesNoVSA () where
@@ -21,10 +20,10 @@ import Data.Radius.Attribute
 data EmptyVSA
 
 instance Eq EmptyVSA where
-  x == _  =  case x of {}
+  _ == _  =  True
 
 instance Ord EmptyVSA where
-  x `compare` _  =  case x of {}
+  _ `compare` _  =  EQ
 
 
 instance Arbitrary (NumberAbstract EmptyVSA) where
