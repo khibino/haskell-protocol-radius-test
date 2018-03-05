@@ -1,6 +1,8 @@
 {-# LANGUAGE FlexibleInstances #-}
 
-module Test.Data.Radius.ArbitrariesNoVSA () where
+module Test.Data.Radius.ArbitrariesNoVSA (
+  EmptyVSA (),
+  ) where
 
 import Test.QuickCheck (Arbitrary (..), oneof, elements)
 
@@ -13,7 +15,7 @@ import qualified Data.Set as Set
 import Data.Radius.Scalar
   (AtText (..), AtString (..), AtInteger (..))
 import Data.Radius.Attribute
-  (NumberAbstract (..), Attribute' (..), Attribute (..),
+  (NumberAbstract (..), Attribute' (..), Attribute (..), TypedNumberSets (..),
    numbersText, numbersString, numbersInteger)
 
 
@@ -24,6 +26,16 @@ instance Eq EmptyVSA where
 
 instance Ord EmptyVSA where
   _ `compare` _  =  EQ
+
+instance Show EmptyVSA where
+  show _  =  "<EmptyVSA>"
+
+
+instance TypedNumberSets EmptyVSA where
+  attributeNumbersText     = numbersText
+  attributeNumbersString   = numbersString
+  attributeNumbersInteger  = numbersInteger
+  attributeNumbersIpV4     = Set.empty
 
 
 instance Arbitrary (NumberAbstract EmptyVSA) where
