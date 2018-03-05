@@ -24,6 +24,7 @@ library
                        Test.Data.Radius.Arbitraries
                        Test.Data.Radius.ArbitrariesNoVSA
   other-modules:
+                       Test.Data.Radius.IsoBase
                        Test.Data.Radius.ArbitrariesBase
   other-extensions:    FlexibleInstances
   build-depends:       base <5

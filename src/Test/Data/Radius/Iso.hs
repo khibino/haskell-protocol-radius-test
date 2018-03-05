@@ -10,6 +10,7 @@ module Test.Data.Radius.Iso (
   ) where
 
 import Test.Data.Radius.Arbitraries ()
+import Test.Data.Radius.IsoBase (isoAttribute', isoPacket)
 
 import Test.QuickCheck.Simple (Test, qcTest)
 
@@ -21,7 +22,7 @@ import Data.Serialize.Get (Get, runGet)
 import Data.Serialize.Put (Put, runPut)
 
 import Data.Radius.Scalar (Bin128, AtText, AtString, AtInteger, AtIpV4)
-import Data.Radius.Packet (Code, Header, Packet)
+import Data.Radius.Packet (Code, Header)
 import Data.Radius.Attribute (Attribute', Attribute, TypedNumberSets)
 import qualified Data.Radius.StreamGet as Get
 import Data.Radius.StreamPut (AttributePutM)
@@ -45,24 +46,6 @@ isoHeader h =
   runGet Get.header (runPut $ Put.header h)
   ==
   Right h
-
-isoAttribute' :: Eq a
-              => Get (Attribute' a)
-              -> (a -> ByteString -> Put)
-              -> Attribute' a -> Bool
-isoAttribute' vGet vPut a =
-  runGet (Get.attribute' vGet) (runPut $ Put.attribute' vPut a)
-  ==
-  Right a
-
-isoPacket :: Eq a
-          => Get (Attribute' a)
-          -> (a -> ByteString -> Put)
-          -> Packet [Attribute' a] -> Bool
-isoPacket vGet vPut p =
-  runGet (Get.upacket vGet) (runPut $ Put.upacket vPut p)
-  ==
-  Right p
 
 
 isoAtText :: AtText -> Bool
