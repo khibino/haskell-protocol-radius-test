@@ -9,7 +9,7 @@ import Test.QuickCheck (Arbitrary (..), oneof, elements)
 import Test.Data.Radius.ArbitrariesBase
   (genSizedString, genAtText, genAtString, genPacket)
 
-import Control.Applicative ((<$>), (<*>))
+import Control.Applicative ((<$>), pure, (<*>))
 import qualified Data.Set as Set
 
 import Data.Radius.Scalar

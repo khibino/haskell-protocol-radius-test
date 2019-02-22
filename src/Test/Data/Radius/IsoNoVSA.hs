@@ -15,7 +15,7 @@ import qualified Test.Data.Radius.IsoBase as Base
 
 import Test.QuickCheck.Simple (Test, qcTest)
 
-import Control.Applicative ((<$>))
+import Control.Applicative ((<$>), pure)
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Data.ByteString (ByteString)
 import Data.Serialize.Get (Get, runGet)
