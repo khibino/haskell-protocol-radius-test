@@ -7,16 +7,18 @@ module Test.Data.Radius.ArbitrariesNoVSA (
 import Test.QuickCheck (Arbitrary (..), oneof, elements)
 
 import Test.Data.Radius.ArbitrariesBase
-  (genSizedString, genAtText, genAtString)
+  (genSizedString, genAtText, genAtString, genPacket)
 
 import Control.Applicative ((<$>), (<*>))
 import qualified Data.Set as Set
 
 import Data.Radius.Scalar
   (AtText (..), AtString (..), AtInteger (..))
+import Data.Radius.Packet (Packet)
 import Data.Radius.Attribute
   (NumberAbstract (..), Attribute' (..), Attribute (..), TypedNumberSets (..),
    numbersText, numbersString, numbersInteger)
+import qualified Data.Radius.StreamPut as Put
 
 
 data EmptyVSA
@@ -72,3 +74,6 @@ instance Arbitrary (Attribute AtIpV4) where
     <$> elements (Set.toList attributeNumbersIpV4)
     <*> arbitrary
  -}
+
+instance Arbitrary (Packet [Attribute' EmptyVSA]) where
+  arbitrary = genPacket $ Put.attribute' $ \_ _ -> pure ()
