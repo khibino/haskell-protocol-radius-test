@@ -1,5 +1,9 @@
 # Revision history for protocol-radius-test
 
-## 0.0.1.0  -- YYYY-mm-dd
+## 0.1.0.0  -- 2019-02-22
 
-* First version. Released on an unsuspecting world.
+* Divide NoVSA modules.
+
+## 0.0.1.0  -- 2017-12-17
+
+* First version.
