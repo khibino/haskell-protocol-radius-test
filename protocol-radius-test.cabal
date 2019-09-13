@@ -1,5 +1,5 @@
 name:                protocol-radius-test
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            testsuit of protocol-radius haskell package
 description:         This package provides
                      testsuit of protocol-radius haskell package.
