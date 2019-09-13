@@ -97,4 +97,4 @@ genPacket encodeA = do
     (p, len) <- genCountedPacket ac encodeA
     if len <= 4096
       then pure p
-      else fail "genPacket: this should not happen broken size property (header-size + 256 * 15 < 4096)."
+      else error "genPacket: this should not happen broken size property (header-size + 256 * 15 < 4096)."
